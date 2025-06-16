@@ -60,6 +60,14 @@ int current_read_point;
 int quiz_count;	// 登録されたクイズの問題数
 int total_score;
 
+void PrintHeader(int num_of_quiz)
+{
+	system("cls");
+	printf("=================================================\n");
+	printf("=== 得点: %06d 点 ===== 第 %02d 問 / 全 %02d 問 ===\n", total_score, num_of_quiz + 1, QUIZ_COUNT);
+	printf("=================================================\n");
+}
+
 int GetScore(int num)
 {
 	int len = strlen(quizzes[num].q) + 1;
@@ -97,6 +105,7 @@ void ShuffleAnswers()
 	}
 }
 
+// 問題をシャッフルする
 void ShuffleQuizzes()
 {
 	for (int i = 0; i < quiz_count; i++)
@@ -120,7 +129,7 @@ bool Read(int num)
 		return true;
 	}
 
-	system("cls");
+	PrintHeader(num);
 	char buf[QUESTION_STRING_LENGTH];
 	strncpy_s(buf, quizzes[num].q, current_read_point);
 	printf(buf);
@@ -161,19 +170,20 @@ void Init()
 
 int main()
 {
+start:
 	srand((unsigned int)time(NULL));
 	Init();
 
 	for (int i = 0; i < QUIZ_COUNT; i++)
 	{
-		system("cls");
+		PrintHeader(i);
 		printf("問題\n");
 		Sleep(2000);
 		ReadQuiz(i);
 		printf("\n");	// 問題と選択肢の間を一行開ける
 		ShowChoises(i);
 		printf("\n");	// 選択肢と回答の間を一行開ける
-		
+
 		int answer;
 
 		while (1)
@@ -194,6 +204,8 @@ int main()
 				break;
 			}
 		}
+
+		printf("回答: %d.\n", answer + 1);
 
 		// 正誤判定
 		if (answer == quizzes[i].answer)
@@ -216,6 +228,20 @@ int main()
 				break;
 	}
 
-	system("cls");
-	printf("得点: %d\n", total_score);
+	printf("\n");
+	printf("ゲーム終了。得点: %d\n", total_score);
+	printf("もう一度 挑戦しますか？(y/n)\n");
+	printf("\n");
+
+	while (1)
+	{
+		if (GetKeyState('Y') & 0x8000)
+		{
+			goto start;
+		}
+		else if (GetKeyState('N') & 0x8000)
+		{
+			break;
+		}
+	}
 }
