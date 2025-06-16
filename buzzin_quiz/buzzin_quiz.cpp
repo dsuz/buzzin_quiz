@@ -2,81 +2,121 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#define INTERVAL 50	//300	// –â“Ç‚İ‚Ì‘¬‚³i¬‚³‚¢‚Ù‚Ç‘¬‚¢j
-#define QUESTION_STRING_LENGTH 10000
-#define QUIZ_COUNT 3	// ƒNƒCƒY‚ğ‰½–âo‚·‚©
+#include <conio.h>
+#include <windows.h>
+#define INTERVAL 50	//300	// å•èª­ã¿ã®é€Ÿã•ï¼ˆå°ã•ã„ã»ã©é€Ÿã„ï¼‰
+#define QUESTION_STRING_LENGTH 10000	// å•é¡Œæ–‡ã®é•·ã•
+#define CHOISE_LENGTH 100	// é¸æŠè‚¢ã®é•·ã•
+#define QUIZ_COUNT 3	// ã‚¯ã‚¤ã‚ºã‚’ä½•å•å‡ºã™ã‹
+#define CHOISE_COUNT 3	// ä¸‰æŠ
+#define BEEP printf("\a");
 
 typedef struct {
 	char q[QUESTION_STRING_LENGTH];
-	char choises[3][100];
+	char choises[CHOISE_COUNT][CHOISE_LENGTH];
 	int answer;
 } QUIZ;
 
 QUIZ quizzes[] = {
 	{
-		"“ú–{‚Å‚Q”Ô–Ú‚É‚‚¢R‚ÍH\n",
+		"æ—¥æœ¬ã§ï¼’ç•ªç›®ã«é«˜ã„å±±ã¯ï¼Ÿ\n",
 		{
-			"•xmR\n",
-			"–kŠx\n",
-			"–k•ä‚Šx\n"
+			"å¯Œå£«å±±\n",
+			"åŒ—å²³\n",
+			"åŒ—ç©‚é«˜å²³\n"
+		},
+		1
+	},
+	{
+		"ç«ã‚’ç¥è–è¦–ã™ã‚‹ã“ã¨ã‹ã‚‰ã€Œæ‹ç«æ•™ã€ã¨ã‚‚å‘¼ã°ã‚Œã‚‹ã€å¤ä»£ãƒšãƒ«ã‚·ã‚¢ã‚’èµ·æºã¨ã™ã‚‹å®—æ•™ã¯ä½•ã§ã—ã‚‡ã†ï¼Ÿ\n",
+		{
+			"ã‚¾ãƒ­ã‚¢ã‚¹ã‚¿ãƒ¼æ•™\n",
+			"ãƒãƒ‹æ•™\n",
+			"ã‚·ã‚¯æ•™\n"
 		},
 		0
 	},
 	{
-		"‰Î‚ğ_¹‹‚·‚é‚±‚Æ‚©‚çu”q‰Î‹³v‚Æ‚àŒÄ‚Î‚ê‚éAŒÃ‘ãƒyƒ‹ƒVƒA‚ğ‹NŒ¹‚Æ‚·‚é@‹³‚Í‰½‚Å‚µ‚å‚¤H\n",
+		"ã€Œãªãœå±±ã«ç™»ã‚‹ã®ã‹ï¼Ÿã€ã¨èã‹ã‚Œã¦ã€Œãã“ã«å±±ãŒã‚ã‚‹ã‹ã‚‰ã€ã¨ç­”ãˆãŸé€¸è©±ã§çŸ¥ã‚‰ã‚Œã‚‹ã‚¤ã‚®ãƒªã‚¹ã®ç™»å±±å®¶ã¯èª°ã§ã—ã‚‡ã†ï¼Ÿ\n",
 		{
-			"ƒ]ƒƒAƒXƒ^[‹³\n",
-			"ƒ}ƒj‹³\n",
-			"ƒVƒN‹³\n"
+			"ã‚¸ãƒ§ãƒ¼ã‚¸ãƒ»ãƒãƒ­ãƒªãƒ¼\n",
+			"ã‚¸ãƒ§ãƒ¼ã‚¸ãƒ»ãƒãƒ­ãƒ‹ãƒ¼\n",
+			"ã‚¸ãƒ§ãƒ¼ã‚¸ãƒ»ã‚«ãƒ­ãƒªãƒ¼\n"
 		},
 		0
 	},
 	{
-		"u‚È‚ºR‚É“o‚é‚Ì‚©Hv‚Æ•·‚©‚ê‚Äu‚»‚±‚ÉR‚ª‚ ‚é‚©‚çv‚Æ“š‚¦‚½ˆí˜b‚Å’m‚ç‚ê‚éƒCƒMƒŠƒX‚Ì“oR‰Æ‚Í’N‚Å‚µ‚å‚¤H\n",
+		"ã‚¿ãƒã‚³ã€ã‚¸ãƒ£ã‚¬ã‚¤ãƒ¢ã€ãƒˆãƒãƒˆã¯ã„ãšã‚Œã‚‚ä½•ç§‘ã®æ¤ç‰©ã§ã—ã‚‡ã†ï¼Ÿ\n",
 		{
-			"ƒWƒ‡[ƒWEƒ}ƒƒŠ[\n",
-			"ƒWƒ‡[ƒWEƒ}ƒƒj[\n",
-			"ƒWƒ‡[ƒWEƒJƒƒŠ[\n"
-		},
-		0
-	},
-	{
-		"ƒ^ƒoƒRAƒWƒƒƒKƒCƒ‚Aƒgƒ}ƒg‚Í‚¢‚¸‚ê‚à‰½‰È‚ÌA•¨‚Å‚µ‚å‚¤H\n",
-		{
-			"ƒiƒX‰È\n",
-			"ƒLƒN‰È\n",
-			"ƒ†ƒŠ‰È\n"
+			"ãƒŠã‚¹ç§‘\n",
+			"ã‚­ã‚¯ç§‘\n",
+			"ãƒ¦ãƒªç§‘\n"
 		},
 		0
 	}
 };
 
 int current_read_point;
+int quiz_count;	// ç™»éŒ²ã•ã‚ŒãŸã‚¯ã‚¤ã‚ºã®å•é¡Œæ•°
+int total_score;
 
+int GetScore(int num)
+{
+	int len = strlen(quizzes[num].q) + 1;
+	return 10 + (len - current_read_point) * 100 / len;
+}
+
+void ShowChoises(int num)
+{
+	for (int i = 0; i < CHOISE_COUNT; i++)
+	{
+		printf("%d. ", i + 1);
+		printf(quizzes[num].choises[i]);
+	}
+}
+
+// é¸æŠè‚¢ã‚’ã‚·ãƒ£ãƒƒãƒ•ãƒ«ã™ã‚‹
 void ShuffleAnswers()
 {
+	for (int i = 0; i < quiz_count; i++)
+	{
+		for (int j = 0; j < CHOISE_COUNT; j++)
+		{
+			int t = rand() % CHOISE_COUNT;
+			char tmp[CHOISE_LENGTH];
+			strcpy_s(tmp, quizzes[i].choises[j]);
+			strcpy_s(quizzes[i].choises[j], quizzes[i].choises[t]);
+			strcpy_s(quizzes[i].choises[t], tmp);
 
+			// æ­£è§£ã‚’æ›´æ–°ã™ã‚‹
+			if (quizzes[i].answer == j)
+				quizzes[i].answer = t;
+			else if (quizzes[i].answer == t)
+				quizzes[i].answer = j;
+		}
+	}
 }
 
 void ShuffleQuizzes()
 {
-	int cnt = sizeof(quizzes) / sizeof(QUIZ);
-
-	for (int i = 0; i < cnt; i++)
+	for (int i = 0; i < quiz_count; i++)
 	{
-		int t = rand() % cnt;
+		int t = rand() % quiz_count;
 		QUIZ tmp = quizzes[i];
 		quizzes[i] = quizzes[t];
 		quizzes[t] = tmp;
 	}
 }
 
+// æ–‡å­—ã‚’ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã•ã›ã‚‹
+// å¼•æ•° num: å•é¡Œã®ç•ªå·
 bool Read(int num)
 {
 	current_read_point += 2;
 
 	if (current_read_point >= strlen(quizzes[num].q))
 	{
+		printf("\n");
 		return true;
 	}
 
@@ -105,11 +145,16 @@ void ReadQuiz(int num)
 
 			last_clock = new_clock;
 		}
-	}	// –â“Ç‚İ
+
+		if (GetKeyState(VK_SPACE) & 0x8000)
+			break;
+	}	// å•èª­ã¿
 }
 
 void Init()
 {
+	total_score = 0;
+	quiz_count = sizeof(quizzes) / sizeof(QUIZ);
 	ShuffleQuizzes();
 	ShuffleAnswers();
 }
@@ -119,9 +164,58 @@ int main()
 	srand((unsigned int)time(NULL));
 	Init();
 
-
 	for (int i = 0; i < QUIZ_COUNT; i++)
 	{
+		system("cls");
+		printf("å•é¡Œ\n");
+		Sleep(2000);
 		ReadQuiz(i);
+		printf("\n");	// å•é¡Œã¨é¸æŠè‚¢ã®é–“ã‚’ä¸€è¡Œé–‹ã‘ã‚‹
+		ShowChoises(i);
+		printf("\n");	// é¸æŠè‚¢ã¨å›ç­”ã®é–“ã‚’ä¸€è¡Œé–‹ã‘ã‚‹
+		
+		int answer;
+
+		while (1)
+		{
+			if (GetKeyState('1') & 0x8000)
+			{
+				answer = 0;
+				break;
+			}
+			else if (GetKeyState('2') & 0x8000)
+			{
+				answer = 1;
+				break;
+			}
+			else if (GetKeyState('3') & 0x8000)
+			{
+				answer = 2;
+				break;
+			}
+		}
+
+		// æ­£èª¤åˆ¤å®š
+		if (answer == quizzes[i].answer)
+		{
+			int score = GetScore(i);
+			printf("æ­£è§£! %d ç‚¹ ç²å¾—\n", score);
+			total_score += score;
+			BEEP
+		}
+		else
+		{
+			printf("ä¸æ­£è§£\n");
+		}
+
+		printf("\n");
+		printf("ENTER ã‚’æŠ¼ã™ã¨æ¬¡ã«é€²ã¿ã¾ã™\n");
+
+		while (1)
+			if (GetKeyState(VK_RETURN) & 0x8000)
+				break;
 	}
+
+	system("cls");
+	printf("å¾—ç‚¹: %d\n", total_score);
 }
